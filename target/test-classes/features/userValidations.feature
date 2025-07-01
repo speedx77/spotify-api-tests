@@ -21,7 +21,7 @@ Description: Testing out Spotify Web API User Endpoints: https://developer.spoti
 
 Background: User is logged in and has a token for auth
 	Given i am an authorized user with a token
-	
+
 Scenario: GET user current profile information
 	   When user calls me endpoint
 	   Then the API call is successful with status code 200
@@ -30,12 +30,12 @@ Scenario: GET user current profile information
 Examples:
 	|displayName  |
 	|speedx77     |
-	
+
+@Items
 Scenario: Get users top items
 	When user calls top "<item>" endpoint with "<timeRange>" <limit> <offset>
 	Then the API call is successful with status code 200
-	#And "item" array exists
-	#And "item" array is of length "<limit>" and begins from "<offset>"
+	And "items" array has a length of <limit> and begins from <offset>
 	
 Examples:
 	|item   |timeRange   |limit  |offset  |

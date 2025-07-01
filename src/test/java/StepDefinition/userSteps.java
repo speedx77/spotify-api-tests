@@ -38,7 +38,7 @@ public class userSteps extends utils {
 	@Then("the API call is successful with status code {int}")
 	public void the_api_call_is_successful_with_status_code(Integer status) {
 		//assert that call was successful
-		Assert.assertEquals(response.getStatusCode(), (int) status);
+		Assert.assertEquals( (int) status, response.getStatusCode());
 	}
 	
 	@Then("{string} in response body is {string}")
@@ -48,7 +48,7 @@ public class userSteps extends utils {
 		///System.out.println(responseString);
 		
 		//If call was successful then check display name, change desired display name in examples in the userValidations feature file
-		Assert.assertEquals(getJsonPath(response, keyValue), expectedValue);
+		Assert.assertEquals(expectedValue, getJsonPath(response, keyValue));
 	}
 	
 	
@@ -67,5 +67,16 @@ public class userSteps extends utils {
 		//System.out.println(responseString);
 	}
 
+	
+	@Then("{string} array has a length of {int} and begins from {int}")
+	public void array_exists(String expectedArrayName, int limit, int offset) {
+		
+		//System.out.println(response.jsonPath().getList(expectedArrayName).size());
+		Assert.assertEquals(limit, response.jsonPath().getList(expectedArrayName).size());
+		Assert.assertEquals(offset, response.jsonPath().getInt("offset"));
+		//Assert.assertEquals(getJsonPath(response, expectedArrayName), expectedArrayName);
+		
+		
+	}
 	
 }
