@@ -79,4 +79,12 @@ public class userSteps extends utils {
 		
 	}
 	
+	
+	@When("user calls user profile endpoint for user {string}")
+	public void user_calls_user_profile_endpoint_for_user(String userId) {
+		
+		response = given().baseUri("https://api.spotify.com")
+				.header("Authorization", String.format("Bearer %s", token) ).when().get("v1/users/" + userId)
+				.then().extract().response();
+	}
 }

@@ -38,7 +38,31 @@ Scenario: Get users top items
 	And "items" array has a length of <limit> and begins from <offset>
 	
 Examples:
-	|item   |timeRange   |limit  |offset  |
-	|tracks |short_term  |10     |0       |
-	|tracks |medium_term |20     |5       |
-	|tracks |long_term   |30     |10      |
+	|item    |timeRange   |limit  |offset  |
+	|tracks  |short_term  |10     |0       |
+	|tracks  |medium_term |20     |5       |
+	|tracks  |long_term   |30     |10      |
+	|artists |short_term  |10     |0       |
+	|artists |medium_term |20     |5       |
+	|artists |long_term   |30     |10      |
+	
+@SpecificUser
+Scenario: Get user profile of specific user
+	When user calls user profile endpoint for user "<userId>"
+	Then the API call is successful with status code 200
+	And "display_name" in response body is "<displayName>"
+	And "type" in response body is "<userType>"
+	And "uri" in response body is "<uri>"
+	And "id" in response body is "<id>"
+	And "external_urls.spotify" in response body is "<externalUrl>"
+	
+Examples:
+	|userId                     |displayName   |userType    |uri                                      |id                             |externalUrl                                               |
+	|4bbflibvj0k3xne6p7cqc6h3d  |Jean          |user        |spotify:user:4bbflibvj0k3xne6p7cqc6h3d   |4bbflibvj0k3xne6p7cqc6h3d      |https://open.spotify.com/user/4bbflibvj0k3xne6p7cqc6h3d   |
+	
+#hooks to make sure playlist is unfollowed before?
+@FollowPlaylist
+Scenario: Follow a playlist and check if user is following the playlist
+	When user calls the follow playlist endpoint
+	Then the API call is successful with status code 200
+	And check if "<userId"> is following the playlist id: "<playlistId">

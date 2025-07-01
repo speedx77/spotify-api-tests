@@ -5,7 +5,7 @@ import io.restassured.response.Response;
 
 public class utils{
 	
-public static String getJsonPath(Response response, String key) {
+	public static String getJsonPath(Response response, String key) {
 		
 		String responseString = response.asString();
 
