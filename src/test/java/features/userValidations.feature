@@ -60,9 +60,15 @@ Examples:
 	|userId                     |displayName   |userType    |uri                                      |id                             |externalUrl                                               |
 	|4bbflibvj0k3xne6p7cqc6h3d  |Jean          |user        |spotify:user:4bbflibvj0k3xne6p7cqc6h3d   |4bbflibvj0k3xne6p7cqc6h3d      |https://open.spotify.com/user/4bbflibvj0k3xne6p7cqc6h3d   |
 	
-#hooks to make sure playlist is unfollowed before?
+#hooks to make sure playlist is unfollowed before/after?
 @FollowPlaylist
 Scenario: Follow a playlist and check if user is following the playlist
-	When user calls the follow playlist endpoint
+	When user calls the follow playlist endpoint for "<playlistId>"
 	Then the API call is successful with status code 200
-	And check if "<userId"> is following the playlist id: "<playlistId">
+	And check if user is following the playlist id: "<playlistId>"
+	And the API call is successful with status code 200
+	And the response body returns "[true]"
+	
+Examples:
+	|playlistId              |
+	|68dJSKcRlsUB4i3acWCXEk  |

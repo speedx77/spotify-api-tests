@@ -20,6 +20,7 @@ public class userSteps extends utils {
 	Dotenv dotenv = Dotenv.load();
 	String token;
 	Response response;
+	String storedPlaylistId;
 	
 	@Given("i am an authorized user with a token")
 	public void i_am_an_authorized_user_with_a_token(){
@@ -85,6 +86,35 @@ public class userSteps extends utils {
 		
 		response = given().baseUri("https://api.spotify.com")
 				.header("Authorization", String.format("Bearer %s", token) ).when().get("v1/users/" + userId)
+				.then().extract().response();
+	}
+	
+	@When("user calls the follow playlist endpoint for {string}")
+	public void user_calls_the_follow_playlist_endpoint(String playlistId) {
+		storedPlaylistId = playlistId;
+		response = given().baseUri("https://api.spotify.com")
+				.header("Authorization", String.format("Bearer %s", token) ).when().put("v1/playlists/" + playlistId + "/followers")
+				.then().extract().response();
+	}
+	
+	@Then("check if user is following the playlist id: {string}")
+	public void check_if_user_is_following_the_playlist_id(String playlistId) {
+		response = given().baseUri("https://api.spotify.com")
+				.header("Authorization", String.format("Bearer %s", token) ).when().get("v1/playlists/" + playlistId + "/followers/contains")
+				.then().extract().response();
+	}
+	
+	@Then("the response body returns {string}")
+	public void the_response_body_returns(String expectedValue) {
+		Assert.assertEquals(expectedValue, getResponseBodyAsString(response));
+	}
+	
+	
+	@Then("unfollow playlist id: {string}")
+	public void unfollow_playlist_id(String playlistId) {
+		System.out.println(token);
+		response = given().baseUri("https://api.spotify.com")
+				.header("Authorization", String.format("Bearer %s", token) ).when().delete("v1/playlists/" + playlistId + "/followers")
 				.then().extract().response();
 	}
 }
