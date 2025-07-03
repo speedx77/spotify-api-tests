@@ -30,6 +30,20 @@ Scenario: GET user current profile information
 Examples:
 	|displayName  |
 	|speedx77     |
+	
+@SpecificUser
+Scenario: Get user profile of specific user
+	When user calls user profile endpoint for user "<userId>"
+	Then the API call is successful with status code 200
+	And "display_name" in response body is "<displayName>"
+	And "type" in response body is "<userType>"
+	And "uri" in response body is "<uri>"
+	And "id" in response body is "<id>"
+	And "external_urls.spotify" in response body is "<externalUrl>"
+	
+Examples:
+	|userId                     |displayName   |userType    |uri                                      |id                             |externalUrl                                               |
+	|4bbflibvj0k3xne6p7cqc6h3d  |Jean          |user        |spotify:user:4bbflibvj0k3xne6p7cqc6h3d   |4bbflibvj0k3xne6p7cqc6h3d      |https://open.spotify.com/user/4bbflibvj0k3xne6p7cqc6h3d   |
 
 @Items
 Scenario: Get users top items
@@ -46,20 +60,19 @@ Examples:
 	|artists |medium_term |20     |5       |
 	|artists |long_term   |30     |10      |
 	
-@SpecificUser
-Scenario: Get user profile of specific user
-	When user calls user profile endpoint for user "<userId>"
+@FollowedArtists
+Scenario: Get users followed artists
+	When user calls following endpoint with a limit of <limit>
 	Then the API call is successful with status code 200
-	And "display_name" in response body is "<displayName>"
-	And "type" in response body is "<userType>"
-	And "uri" in response body is "<uri>"
-	And "id" in response body is "<id>"
-	And "external_urls.spotify" in response body is "<externalUrl>"
+	And "items" array has a length of <limit>
+	And the user calls the following endpoint again with the after param set to the last artist with <limit>
+	And the API call is successful with status code 200
 	
 Examples:
-	|userId                     |displayName   |userType    |uri                                      |id                             |externalUrl                                               |
-	|4bbflibvj0k3xne6p7cqc6h3d  |Jean          |user        |spotify:user:4bbflibvj0k3xne6p7cqc6h3d   |4bbflibvj0k3xne6p7cqc6h3d      |https://open.spotify.com/user/4bbflibvj0k3xne6p7cqc6h3d   |
+	|limit   |
+	|10      |
 	
+		
 #hooks to make sure playlist is unfollowed before/after?
 @FollowPlaylist
 Scenario: Follow a playlist and check if user is following the playlist
@@ -72,3 +85,25 @@ Scenario: Follow a playlist and check if user is following the playlist
 Examples:
 	|playlistId              |
 	|68dJSKcRlsUB4i3acWCXEk  |
+	
+	
+@FollowArtistOrUser
+Scenario: Follow/Unfollow an Artists or User and check if that user is following them
+	When user calls the follow endpoint with method "PUT" item type "<itemType>" and a body of "<id1>" "<id2>" "<id3>"
+	Then the API call is successful with status code 204
+	And the user calls the check following endpoint with item type "<itemType>" with ids "<id1>" "<id2>" "<id3>"
+	And the API call is successful with status code 200
+	And the response body returns "[true,true,true]"
+	And user calls the follow endpoint with method "DELETE" item type "<itemType>" and a body of "<id1>" "<id2>" "<id3>"
+	And the API call is successful with status code 204
+	And the user calls the check following endpoint with item type "<itemType>" with ids "<id1>" "<id2>" "<id3>"
+	And the API call is successful with status code 200
+	And the response body returns "[false,false,false]"
+	
+	
+	#unfollow done with hooks
+	
+Examples:
+	|itemType     |id1                      |id2                       |id3                        |
+	|user         |walkingdeavd             |12130614075               |65efe5oef0xnvwobso42pdwes  |
+	|artist       |55Aa2cqylxrFIXC767Z865   |0fA0VVWsXO9YnASrzqfmYu    |5f7VJjfbwm532GiveGC0ZK     |

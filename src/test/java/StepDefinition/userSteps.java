@@ -8,31 +8,40 @@ import io.restassured.response.Response;
 import org.junit.Assert;
 
 import static io.restassured.RestAssured.given;
-import io.github.cdimascio.dotenv.Dotenv;
+import static io.restassured.http.ContentType.JSON;
 import io.restassured.path.json.JsonPath;
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import resources.utils;
+import context.ScenarioContext;
 
 
 public class userSteps extends utils {
 	
-	Dotenv dotenv = Dotenv.load();
-	String token;
+	ScenarioContext scenarioContext;
+	
+	public userSteps(ScenarioContext context) {
+		scenarioContext = context;
+	}
+	
 	Response response;
-	String storedPlaylistId;
 	
 	@Given("i am an authorized user with a token")
 	public void i_am_an_authorized_user_with_a_token(){
 		//fetch token from .env file in the root directory, replace with updated token when running test suite
-		token = dotenv.get("TOKEN");
+		scenarioContext.token = dotenv.get("TOKEN");
 	}
 	
 	
 	@When("user calls me endpoint")
 	public void user_calls_me_endpoint() {
 		//When user calls /v1/me endpoint
-		response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", token) ).when().get("v1/me")
+		response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me")
 				.then().extract().response();	
 	}
 	
@@ -60,7 +69,7 @@ public class userSteps extends utils {
 				.queryParam("time_range", timeRange)
 				.queryParam("limit", limit)
 				.queryParam("offset", offset)
-				.header("Authorization", String.format("Bearer %s", token) ).when().get("v1/me/top/" + itemType)
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/top/" + itemType)
 				.then().extract().response();
 		
 		
@@ -85,22 +94,22 @@ public class userSteps extends utils {
 	public void user_calls_user_profile_endpoint_for_user(String userId) {
 		
 		response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", token) ).when().get("v1/users/" + userId)
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/users/" + userId)
 				.then().extract().response();
 	}
 	
 	@When("user calls the follow playlist endpoint for {string}")
 	public void user_calls_the_follow_playlist_endpoint(String playlistId) {
-		storedPlaylistId = playlistId;
+		scenarioContext.playlistId = playlistId;
 		response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", token) ).when().put("v1/playlists/" + playlistId + "/followers")
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().put("v1/playlists/" + playlistId + "/followers")
 				.then().extract().response();
 	}
 	
 	@Then("check if user is following the playlist id: {string}")
 	public void check_if_user_is_following_the_playlist_id(String playlistId) {
 		response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", token) ).when().get("v1/playlists/" + playlistId + "/followers/contains")
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/playlists/" + playlistId + "/followers/contains")
 				.then().extract().response();
 	}
 	
@@ -112,9 +121,118 @@ public class userSteps extends utils {
 	
 	@Then("unfollow playlist id: {string}")
 	public void unfollow_playlist_id(String playlistId) {
-		System.out.println(token);
 		response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", token) ).when().delete("v1/playlists/" + playlistId + "/followers")
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().delete("v1/playlists/" + playlistId + "/followers")
 				.then().extract().response();
 	}
+	
+	@When("user calls following endpoint with a limit of {int}")
+	public void user_calls_following_endpoint_with_a_limit(int limit) {
+		response = given().baseUri("https://api.spotify.com")
+				.queryParam("type", "artist")
+				.queryParam("limit", limit)
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following")
+				.then().extract().response();
+		
+		scenarioContext.lastArtistId = response.jsonPath().get("cursors.after");
+	}
+	
+	@Then("{string} array has a length of {int}")
+	public void array_has_a_length_of(String expectedArrayName, int limit){
+		//Assert.assertEquals(expectedArrayName, getJsonPath(response, "artists.items"));
+		Assert.assertEquals(limit, response.jsonPath().getList("artists.items").size());
+	}
+	
+	@Then("the user calls the following endpoint again with the after param set to the last artist with {int}")
+	public void user_calls_following_endpoint_again__with_the_after_param(int limit) {
+		response = given().baseUri("https://api.spotify.com")
+				.queryParam("type", "artist")
+				.queryParam("limit", limit)
+				.queryParam("after", scenarioContext.lastArtistId)
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following")
+				.then().extract().response();		
+	}
+	
+	
+	@When("user calls the follow endpoint with method {string} item type {string} and a body of {string} {string} {string}")
+	public void user_calls_the_follow_endpoint_with_item_with_body(String method, String itemType, String id1, String id2, String id3) {
+		
+		List<String> ids = Arrays.asList(id1 , id2, id3);
+		Map<String, Object> requestBody = new HashMap<>();
+		
+		requestBody.put("ids", ids);
+		
+		//String[] ids = {id1, id2, id3};
+		//System.out.println(ids);
+		if(method.equals("PUT")) {
+			response = given().baseUri("https://api.spotify.com")
+					.queryParam("type", itemType)
+					.header("Authorization", String.format("Bearer %s", scenarioContext.token))
+					.contentType(JSON)
+					.body(requestBody)
+					//.log().body()
+					.when().put("v1/me/following")
+					.then().extract().response();	
+		} else if(method.equals("DELETE")) {
+			response = given().baseUri("https://api.spotify.com")
+					.queryParam("type", itemType)
+					.header("Authorization", String.format("Bearer %s", scenarioContext.token))
+					.contentType(JSON)
+					.body(requestBody)
+					//.log().body()
+					.when().delete("v1/me/following")
+					.then().extract().response();	
+		}
+		
+	}
+	
+	@Then("the user calls the check following endpoint with item type {string} with ids {string} {string} {string}")
+	public void user_calls_the_check_following_endpoint(String itemType, String id1, String id2, String id3 ) {
+		response = given().baseUri("https://api.spotify.com")
+				.queryParam("type", itemType)
+				.queryParam("ids", id1 + "," + id2 + "," + id3 + ",")
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following/contains")
+				.then().extract().response();	
+	}
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
