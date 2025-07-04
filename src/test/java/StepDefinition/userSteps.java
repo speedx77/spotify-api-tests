@@ -27,9 +27,8 @@ public class userSteps extends utils {
 	
 	public userSteps(ScenarioContext context) {
 		scenarioContext = context;
-	}
+	}	
 	
-	Response response;
 	
 	@Given("i am an authorized user with a token")
 	public void i_am_an_authorized_user_with_a_token(){
@@ -41,14 +40,15 @@ public class userSteps extends utils {
 	@When("user calls me endpoint")
 	public void user_calls_me_endpoint() {
 		//When user calls /v1/me endpoint
-		response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me")
-				.then().extract().response();	
+		scenarioContext.response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me")
+				.then().extract().response();
+		
 	}
 	
 	@Then("the API call is successful with status code {int}")
 	public void the_api_call_is_successful_with_status_code(Integer status) {
 		//assert that call was successful
-		Assert.assertEquals( (int) status, response.getStatusCode());
+		Assert.assertEquals( (int) status, scenarioContext.response.getStatusCode());
 	}
 	
 	@Then("{string} in response body is {string}")
@@ -58,19 +58,21 @@ public class userSteps extends utils {
 		///System.out.println(responseString);
 		
 		//If call was successful then check display name, change desired display name in examples in the userValidations feature file
-		Assert.assertEquals(expectedValue, getJsonPath(response, keyValue));
+		Assert.assertEquals(expectedValue, getJsonPath(scenarioContext.response, keyValue));
 	}
 	
 	
 	
 	@When("user calls top {string} endpoint with {string} {int} {int}")
 	public void call_top_item_endpoint(String itemType, String timeRange, Integer limit, Integer offset) {
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.queryParam("time_range", timeRange)
 				.queryParam("limit", limit)
 				.queryParam("offset", offset)
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/top/" + itemType)
 				.then().extract().response();
+	
+
 		
 		
 		//String responseString = response.asPrettyString();
@@ -82,8 +84,8 @@ public class userSteps extends utils {
 	public void array_exists(String expectedArrayName, int limit, int offset) {
 		
 		//System.out.println(response.jsonPath().getList(expectedArrayName).size());
-		Assert.assertEquals(limit, response.jsonPath().getList(expectedArrayName).size());
-		Assert.assertEquals(offset, response.jsonPath().getInt("offset"));
+		Assert.assertEquals(limit, scenarioContext.response.jsonPath().getList(expectedArrayName).size());
+		Assert.assertEquals(offset, scenarioContext.response.jsonPath().getInt("offset"));
 		//Assert.assertEquals(getJsonPath(response, expectedArrayName), expectedArrayName);
 		
 		
@@ -93,64 +95,74 @@ public class userSteps extends utils {
 	@When("user calls user profile endpoint for user {string}")
 	public void user_calls_user_profile_endpoint_for_user(String userId) {
 		
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/users/" + userId)
 				.then().extract().response();
+		
+
 	}
 	
 	@When("user calls the follow playlist endpoint for {string}")
 	public void user_calls_the_follow_playlist_endpoint(String playlistId) {
 		scenarioContext.playlistId = playlistId;
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().put("v1/playlists/" + playlistId + "/followers")
 				.then().extract().response();
+		
+
 	}
 	
 	@Then("check if user is following the playlist id: {string}")
 	public void check_if_user_is_following_the_playlist_id(String playlistId) {
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/playlists/" + playlistId + "/followers/contains")
 				.then().extract().response();
+		
+
 	}
 	
 	@Then("the response body returns {string}")
 	public void the_response_body_returns(String expectedValue) {
-		Assert.assertEquals(expectedValue, getResponseBodyAsString(response));
+		Assert.assertEquals(expectedValue, getResponseBodyAsString(scenarioContext.response));
 	}
 	
 	
 	@Then("unfollow playlist id: {string}")
 	public void unfollow_playlist_id(String playlistId) {
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().delete("v1/playlists/" + playlistId + "/followers")
 				.then().extract().response();
+		
+
 	}
 	
 	@When("user calls following endpoint with a limit of {int}")
 	public void user_calls_following_endpoint_with_a_limit(int limit) {
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.queryParam("type", "artist")
 				.queryParam("limit", limit)
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following")
 				.then().extract().response();
 		
-		scenarioContext.lastArtistId = response.jsonPath().get("cursors.after");
+		scenarioContext.lastArtistId = scenarioContext.response.jsonPath().get("cursors.after");
 	}
 	
 	@Then("{string} array has a length of {int}")
 	public void array_has_a_length_of(String expectedArrayName, int limit){
 		//Assert.assertEquals(expectedArrayName, getJsonPath(response, "artists.items"));
-		Assert.assertEquals(limit, response.jsonPath().getList("artists.items").size());
+		Assert.assertEquals(limit, scenarioContext.response.jsonPath().getList("artists.items").size());
 	}
 	
 	@Then("the user calls the following endpoint again with the after param set to the last artist with {int}")
 	public void user_calls_following_endpoint_again__with_the_after_param(int limit) {
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.queryParam("type", "artist")
 				.queryParam("limit", limit)
 				.queryParam("after", scenarioContext.lastArtistId)
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following")
-				.then().extract().response();		
+				.then().extract().response();
+		
+
 	}
 	
 	
@@ -165,7 +177,7 @@ public class userSteps extends utils {
 		//String[] ids = {id1, id2, id3};
 		//System.out.println(ids);
 		if(method.equals("PUT")) {
-			response = given().baseUri("https://api.spotify.com")
+			scenarioContext.response = given().baseUri("https://api.spotify.com")
 					.queryParam("type", itemType)
 					.header("Authorization", String.format("Bearer %s", scenarioContext.token))
 					.contentType(JSON)
@@ -173,8 +185,10 @@ public class userSteps extends utils {
 					//.log().body()
 					.when().put("v1/me/following")
 					.then().extract().response();	
+
+
 		} else if(method.equals("DELETE")) {
-			response = given().baseUri("https://api.spotify.com")
+			scenarioContext.response = given().baseUri("https://api.spotify.com")
 					.queryParam("type", itemType)
 					.header("Authorization", String.format("Bearer %s", scenarioContext.token))
 					.contentType(JSON)
@@ -182,17 +196,20 @@ public class userSteps extends utils {
 					//.log().body()
 					.when().delete("v1/me/following")
 					.then().extract().response();	
+			
 		}
 		
 	}
 	
 	@Then("the user calls the check following endpoint with item type {string} with ids {string} {string} {string}")
 	public void user_calls_the_check_following_endpoint(String itemType, String id1, String id2, String id3 ) {
-		response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
 				.queryParam("type", itemType)
 				.queryParam("ids", id1 + "," + id2 + "," + id3 + ",")
 				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following/contains")
 				.then().extract().response();	
+		
+
 	}
 	
 	
