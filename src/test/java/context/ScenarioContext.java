@@ -11,5 +11,6 @@ public class ScenarioContext{
 	public String lastArtistId;
 	
 	public Response response;
+	
 
 }
