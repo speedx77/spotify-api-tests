@@ -30,3 +30,19 @@ Examples:
 |id1                     |id2                        |id3                          |name1             |name2              |name3            |
 |7KlhGxWSB9ljGK6gEKIGhi  |47k1Ox90yk7EicCAd3QDhc     |3niLgyM9yJTaZMpeXjjSSk       |VULTURES          |NICE OUT           |Given Up On Me   |       
 
+
+Scenario: GET users saved tracks
+	When user calls saved tracks endpoint with <limit> and <offset>
+	Then the API call is successful with status code 200
+	And "items" array has a length of <limit> and begins from <offset>
+
+Examples:
+	|limit  |offset  |
+	|10     |0       |
+	|20     |5       |
+	|30     |10      |
+	|10     |0       |
+	|20     |5       |
+	|30     |10      |
+	
+	

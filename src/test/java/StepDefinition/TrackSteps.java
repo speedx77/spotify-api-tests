@@ -38,5 +38,14 @@ public class TrackSteps extends utils{
 				.then().extract().response();
 	}
 	
+	@When("user calls saved tracks endpoint with {int} and {int}")
+	public void user_calls_saved_tracks_endpoint(int limit, int offset) {
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
+				.queryParam("limit", limit)
+				.queryParam("offset", offset)
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/tracks")
+				.then().extract().response();
+	}
+	
 	
 }
