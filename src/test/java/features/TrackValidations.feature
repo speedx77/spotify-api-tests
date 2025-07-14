@@ -45,4 +45,24 @@ Examples:
 	|20     |5       |
 	|30     |10      |
 	
+@SaveTracks
+Scenario: Save tracks for current user
+	When user calls save track endpoint with method "PUT" and "<id1>" "<id2>" "<id3>"
+	Then the API call is successful with status code 200
+	And user calls check saved tracks endpoint with "<id1>" "<id2>" "<id3>"
+	And the response body returns "[true,true,true]"
+
+Examples:
+|id1                     |id2                        |id3                          |
+|7FEJ7OIuMbcjG5hcyg3sh3  |5Ve1Y2fzaoer0zG0FIZcwL     |5RvED3NaFaXNDEhoJh5Cv2       | 
+
+@DeleteTracks
+Scenario: Delete saved tracks for current user
+	When user calls save track endpoint with method "DELETE" and "<id1>" "<id2>" "<id3>"
+	Then the API call is successful with status code 200
+	And user calls check saved tracks endpoint with "<id1>" "<id2>" "<id3>"
+	And the response body returns "[false,false,false]"
 	
+Examples:
+|id1                     |id2                        |id3                          |
+|7FEJ7OIuMbcjG5hcyg3sh3  |5Ve1Y2fzaoer0zG0FIZcwL     |5RvED3NaFaXNDEhoJh5Cv2       | 

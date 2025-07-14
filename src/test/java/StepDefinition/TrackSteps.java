@@ -47,5 +47,34 @@ public class TrackSteps extends utils{
 				.then().extract().response();
 	}
 	
+	@When("user calls save track endpoint with method {string} and {string} {string} {string}")
+	public void user_calls_save_track_endpoint_with(String method, String trackId1, String trackId2, String trackId3) {
+		
+		if(method.equalsIgnoreCase("PUT")) {
+			scenarioContext.response = given().baseUri("https://api.spotify.com")
+					.queryParam("ids", trackId1 + "," + trackId2 + "," + trackId3)
+					.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().put("v1/me/tracks")
+					.then().extract().response();
+		} else if (method.equalsIgnoreCase("DELETE")) {
+			scenarioContext.response = given().baseUri("https://api.spotify.com")
+					.queryParam("ids", trackId1 + "," + trackId2 + "," + trackId3)
+					.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().delete("v1/me/tracks")
+					.then().extract().response();
+		}
+	}
+	
+	@Then("user calls check saved tracks endpoint with {string} {string} {string}")
+	public void user_calls_check_saved_tracks_endpoint(String trackId1, String trackId2, String trackId3) {
+		scenarioContext.response = given().baseUri("https://api.spotify.com")
+				.queryParam("ids", trackId1 + "," + trackId2 + "," + trackId3)
+				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/tracks/contains")
+				.then().extract().response();
+	}
+	
+
+	
+	
+	
+	
 	
 }
