@@ -2,7 +2,7 @@ package StepDefinition;
 
 import static io.restassured.RestAssured.given;
 
-import org.junit.Assert;
+import org.testng.Assert;
 
 import context.ScenarioContext;
 import io.cucumber.java.en.Given;

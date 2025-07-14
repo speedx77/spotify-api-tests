@@ -5,7 +5,7 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.Assert;
+import org.testng.Assert;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
