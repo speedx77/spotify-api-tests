@@ -16,7 +16,7 @@ public class userHooks extends utils {
 		this.userStep = new userSteps(this.scenarioContext);
 	}
 	
-	@Before("@FollowPlaylist")
+	//@Before("@FollowPlaylist")
 	public void beforeFollowPlaylistScenario() {
 		scenarioContext.token = dotenv.get("TOKEN");
 		userStep.unfollow_playlist_id(scenarioContext.playlistId);
@@ -42,6 +42,5 @@ public class userHooks extends utils {
 		userStep.user_calls_the_check_following_endpoint("artist", "55Aa2cqylxrFIXC767Z865", "0fA0VVWsXO9YnASrzqfmYu", "5f7VJjfbwm532GiveGC0ZK");
 		userStep.the_response_body_returns("[false,false,false]");
 	}
-	
 	
 }

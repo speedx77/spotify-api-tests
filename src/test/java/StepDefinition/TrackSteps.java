@@ -2,18 +2,25 @@ package StepDefinition;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.IOException;
+
 import org.testng.Assert;
 
 import context.ScenarioContext;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import resources.utils;
+import io.restassured.http.ContentType;
 
 public class TrackSteps extends utils{
 	
 	ScenarioContext scenarioContext;
+	ResponseSpecification resSpec;
 	
 	public TrackSteps(ScenarioContext context) {
 		scenarioContext = context;
@@ -21,10 +28,12 @@ public class TrackSteps extends utils{
 	
 	
 	@When("user calls tracks endpoint for {string}")
-	public void user_calls_tracks_endpoint(String trackId) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/tracks/" + trackId)
-				.then().extract().response();
+	public void user_calls_tracks_endpoint(String trackId)  {
+		//scenarioContext.response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/tracks/" + trackId)
+		//		.then().extract().response();
 		
+		resSpec = new ResponseSpecBuilder().expectStatusCode(200).expectContentType(ContentType.JSON).build();
+		scenarioContext.response = given().spec(requestSpecification()).when().get("v1/tracks/" + trackId).then().spec(resSpec).extract().response();
 
 	}
 	

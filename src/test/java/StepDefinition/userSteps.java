@@ -4,7 +4,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.restassured.RestAssured;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.ResponseSpecification;
+
 import org.testng.Assert;
 
 import static io.restassured.RestAssured.given;
@@ -12,6 +16,7 @@ import static io.restassured.http.ContentType.JSON;
 import io.restassured.path.json.JsonPath;
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +29,8 @@ import context.ScenarioContext;
 public class userSteps extends utils {
 	
 	ScenarioContext scenarioContext;
+	ResponseSpecification resSpec;
+
 	
 	public userSteps(ScenarioContext context) {
 		scenarioContext = context;
@@ -40,9 +47,7 @@ public class userSteps extends utils {
 	@When("user calls me endpoint")
 	public void user_calls_me_endpoint() {
 		//When user calls /v1/me endpoint
-		scenarioContext.response = given().baseUri("https://api.spotify.com").header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me")
-				.then().extract().response();
-		
+		scenarioContext.response = given().spec(requestSpecification()).when().get("v1/me").then().spec(successResSpec()).extract().response();
 	}
 	
 	@Then("the API call is successful with status code {int}")
@@ -65,16 +70,13 @@ public class userSteps extends utils {
 	
 	@When("user calls top {string} endpoint with {string} {int} {int}")
 	public void call_top_item_endpoint(String itemType, String timeRange, Integer limit, Integer offset) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().spec(requestSpecification())
 				.queryParam("time_range", timeRange)
 				.queryParam("limit", limit)
 				.queryParam("offset", offset)
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/top/" + itemType)
-				.then().extract().response();
-	
+				.when().get("v1/me/top/" + itemType)
+				.then().spec(successResSpec()).extract().response();
 
-		
-		
 		//String responseString = response.asPrettyString();
 		//System.out.println(responseString);
 	}
@@ -94,30 +96,18 @@ public class userSteps extends utils {
 	
 	@When("user calls user profile endpoint for user {string}")
 	public void user_calls_user_profile_endpoint_for_user(String userId) {
-		
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/users/" + userId)
-				.then().extract().response();
-		
-
+		scenarioContext.response = given().spec(requestSpecification()).when().get("v1/users/" + userId).then().spec(successResSpec()).extract().response();
 	}
 	
 	@When("user calls the follow playlist endpoint for {string}")
 	public void user_calls_the_follow_playlist_endpoint(String playlistId) {
 		scenarioContext.playlistId = playlistId;
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().put("v1/playlists/" + playlistId + "/followers")
-				.then().extract().response();
-		
-
+		scenarioContext.response = given().spec(requestSpecification()).when().put("v1/playlists/" + playlistId + "/followers").then().spec(notFoundResSpec()).extract().response();
 	}
 	
 	@Then("check if user is following the playlist id: {string}")
 	public void check_if_user_is_following_the_playlist_id(String playlistId) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/playlists/" + playlistId + "/followers/contains")
-				.then().extract().response();
-		
+		scenarioContext.response = given().spec(requestSpecification()).when().get("v1/playlists/" + playlistId + "/followers/contains").then().spec(successResSpec()).extract().response();
 
 	}
 	
@@ -129,20 +119,19 @@ public class userSteps extends utils {
 	
 	@Then("unfollow playlist id: {string}")
 	public void unfollow_playlist_id(String playlistId) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().delete("v1/playlists/" + playlistId + "/followers")
-				.then().extract().response();
-		
+		scenarioContext.response = given().spec(requestSpecification())
+				.when().delete("v1/playlists/" + playlistId + "/followers")
+				.then().spec(notFoundResSpec()).extract().response();
 
 	}
 	
 	@When("user calls following endpoint with a limit of {int}")
-	public void user_calls_following_endpoint_with_a_limit(int limit) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
+	public void user_calls_following_endpoint_with_a_limit(int limit) {		
+		scenarioContext.response = given().spec(requestSpecification())
 				.queryParam("type", "artist")
 				.queryParam("limit", limit)
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following")
-				.then().extract().response();
+				.when().get("v1/me/following")
+				.then().spec(successResSpec()).extract().response();
 		
 		scenarioContext.lastArtistId = scenarioContext.response.jsonPath().get("cursors.after");
 	}
@@ -155,13 +144,12 @@ public class userSteps extends utils {
 	
 	@Then("the user calls the following endpoint again with the after param set to the last artist with {int}")
 	public void user_calls_following_endpoint_again__with_the_after_param(int limit) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().spec(requestSpecification())
 				.queryParam("type", "artist")
 				.queryParam("limit", limit)
 				.queryParam("after", scenarioContext.lastArtistId)
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following")
-				.then().extract().response();
-		
+				.when().get("v1/me/following")
+				.then().spec(successResSpec()).extract().response();
 
 	}
 	
@@ -177,38 +165,30 @@ public class userSteps extends utils {
 		//String[] ids = {id1, id2, id3};
 		//System.out.println(ids);
 		if(method.equals("PUT")) {
-			scenarioContext.response = given().baseUri("https://api.spotify.com")
+			scenarioContext.response = given().spec(jsonRequestSpecification())
 					.queryParam("type", itemType)
-					.header("Authorization", String.format("Bearer %s", scenarioContext.token))
-					.contentType(JSON)
 					.body(requestBody)
-					//.log().body()
 					.when().put("v1/me/following")
-					.then().extract().response();	
+					.then().spec(noContentResSpec()).extract().response();
 
 
 		} else if(method.equals("DELETE")) {
-			scenarioContext.response = given().baseUri("https://api.spotify.com")
+			scenarioContext.response = given().spec(jsonRequestSpecification())
 					.queryParam("type", itemType)
-					.header("Authorization", String.format("Bearer %s", scenarioContext.token))
-					.contentType(JSON)
 					.body(requestBody)
-					//.log().body()
 					.when().delete("v1/me/following")
-					.then().extract().response();	
-			
+					.then().spec(noContentResSpec()).extract().response();			
 		}
 		
 	}
 	
 	@Then("the user calls the check following endpoint with item type {string} with ids {string} {string} {string}")
 	public void user_calls_the_check_following_endpoint(String itemType, String id1, String id2, String id3 ) {
-		scenarioContext.response = given().baseUri("https://api.spotify.com")
+		scenarioContext.response = given().spec(requestSpecification())
 				.queryParam("type", itemType)
 				.queryParam("ids", id1 + "," + id2 + "," + id3 + ",")
-				.header("Authorization", String.format("Bearer %s", scenarioContext.token) ).when().get("v1/me/following/contains")
-				.then().extract().response();	
-		
+				.when().get("v1/me/following/contains")
+				.then().spec(successResSpec()).extract().response();
 
 	}
 	
