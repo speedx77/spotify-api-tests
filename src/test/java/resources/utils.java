@@ -64,9 +64,17 @@ public class utils{
 		return res;
 	}
 	
-	public ResponseSpecification noContentResSpec() {
+	public ResponseSpecification noContentNotFoundResSpec() {
 		res = new ResponseSpecBuilder()
 				.expectStatusCode(204)
+				.build();
+		
+		return res;
+	}
+	
+	public ResponseSpecification noContentResSpec() {
+		res = new ResponseSpecBuilder()
+				.expectStatusCode(200)
 				.build();
 		
 		return res;

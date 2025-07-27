@@ -102,7 +102,7 @@ public class userSteps extends utils {
 	@When("user calls the follow playlist endpoint for {string}")
 	public void user_calls_the_follow_playlist_endpoint(String playlistId) {
 		scenarioContext.playlistId = playlistId;
-		scenarioContext.response = given().spec(requestSpecification()).when().put("v1/playlists/" + playlistId + "/followers").then().spec(notFoundResSpec()).extract().response();
+		scenarioContext.response = given().spec(requestSpecification()).when().put("v1/playlists/" + playlistId + "/followers").then().spec(noContentResSpec()).extract().response();
 	}
 	
 	@Then("check if user is following the playlist id: {string}")
@@ -121,7 +121,7 @@ public class userSteps extends utils {
 	public void unfollow_playlist_id(String playlistId) {
 		scenarioContext.response = given().spec(requestSpecification())
 				.when().delete("v1/playlists/" + playlistId + "/followers")
-				.then().spec(notFoundResSpec()).extract().response();
+				.then().spec(noContentResSpec()).extract().response();
 
 	}
 	
@@ -169,7 +169,7 @@ public class userSteps extends utils {
 					.queryParam("type", itemType)
 					.body(requestBody)
 					.when().put("v1/me/following")
-					.then().spec(noContentResSpec()).extract().response();
+					.then().spec(noContentNotFoundResSpec()).extract().response();
 
 
 		} else if(method.equals("DELETE")) {
@@ -177,7 +177,7 @@ public class userSteps extends utils {
 					.queryParam("type", itemType)
 					.body(requestBody)
 					.when().delete("v1/me/following")
-					.then().spec(noContentResSpec()).extract().response();			
+					.then().spec(noContentNotFoundResSpec()).extract().response();			
 		}
 		
 	}
