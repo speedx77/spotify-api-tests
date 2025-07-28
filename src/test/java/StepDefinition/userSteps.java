@@ -139,6 +139,7 @@ public class userSteps extends utils {
 	@Then("{string} array has a length of {int}")
 	public void array_has_a_length_of(String expectedArrayName, int limit){
 		//Assert.assertEquals(expectedArrayName, getJsonPath(response, "artists.items"));
+		// TODO rewrite this one to be more general/dynamic and check if I am using it elsewhere
 		Assert.assertEquals(limit, scenarioContext.response.jsonPath().getList("artists.items").size());
 	}
 	
