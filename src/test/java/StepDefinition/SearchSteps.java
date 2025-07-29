@@ -20,9 +20,6 @@ import io.restassured.specification.ResponseSpecification;
 
 import resources.utils;
 
-import pojo.Artists;
-import pojo.Followers;
-import pojo.Image;
 import pojo.Items;
 import pojo.SearchResponse;
 
@@ -54,24 +51,37 @@ public class SearchSteps extends utils {
 	
 
 	@Then("{string} is found in {string} response body with an {string}")
-	public void item_in_response_body_is_found(String artistName, String type, String id) throws JsonMappingException, JsonProcessingException{
-		Boolean artistFound = false;
+	public void item_in_response_body_is_found(String name, String type, String id) throws JsonMappingException, JsonProcessingException{
+		Boolean itemFound = false;
 		Response resp = scenarioContext.response;
 		
 		ObjectMapper mapper = new ObjectMapper();
 		SearchResponse searchResponse = mapper.readValue(resp.asString(), SearchResponse.class);
 		
-		List<Items> artists = searchResponse.getArtists().getItems();
-		for (Items artist : artists) {
 
-		    if(artist.getName().equalsIgnoreCase(artistName)) {
-		    	if(artist.getId().equalsIgnoreCase(id)) {
-		    		artistFound = true;
-		    	};
-		    }
+		if(type.equals("artists")) {
+			List<Items> items = searchResponse.getArtists().getItems();
+			for (Items item : items) {
+
+			    if(item.getName().equalsIgnoreCase(name)) {
+			    	if(item.getId().equalsIgnoreCase(id)) {
+			    		itemFound = true;
+			    	};
+			    }
+			}
+		} else if (type.equals("albums")) {
+			List<Items> items = searchResponse.getAlbums().getItems();
+			for (Items item : items) {
+			    if(item.getName().equalsIgnoreCase(name)) {
+			    	if(item.getId().equalsIgnoreCase(id)) {
+			    		itemFound = true;
+			    	};
+			    }
+			}
 		}
 		
-		Assert.assertTrue(String.format("%s has been found in search", artistName), artistFound);
+		
+		Assert.assertTrue(String.format("%s has been found in search", name), itemFound);
 		
 	}
 	
