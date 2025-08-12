@@ -13,10 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import context.ScenarioContext;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
 import io.restassured.specification.ResponseSpecification;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 import resources.utils;
 
@@ -62,21 +61,36 @@ public class SearchSteps extends utils {
 		if(type.equals("artists")) {
 			List<Items> items = searchResponse.getArtists().getItems();
 			for (Items item : items) {
-
-			    if(item.getName().equalsIgnoreCase(name)) {
-			    	if(item.getId().equalsIgnoreCase(id)) {
-			    		itemFound = true;
-			    	};
-			    }
+				if(item != null) {
+					if(item.getName().equalsIgnoreCase(name)) {
+				    	if(item.getId().equalsIgnoreCase(id)) {
+				    		itemFound = true;
+				    	};
+				    }
+				}	    
 			}
 		} else if (type.equals("albums")) {
 			List<Items> items = searchResponse.getAlbums().getItems();
 			for (Items item : items) {
-			    if(item.getName().equalsIgnoreCase(name)) {
-			    	if(item.getId().equalsIgnoreCase(id)) {
-			    		itemFound = true;
-			    	};
-			    }
+				if(item != null) {
+					if(item.getName().equalsIgnoreCase(name)) {
+				    	if(item.getId().equalsIgnoreCase(id)) {
+				    		itemFound = true;
+				    	};
+				    }
+				}
+			}
+		} else if (type.equals("playlists")) {
+			List<Items> items = searchResponse.getPlaylists().getItems();
+			for (Items item : items) {
+				if(item != null ) {
+					if(item.getName().equalsIgnoreCase(name)) {
+				    	if(item.getId().equalsIgnoreCase(id)) {
+				    		itemFound = true;
+				    	};
+				    }
+				}
+			    
 			}
 		}
 		
@@ -89,6 +103,11 @@ public class SearchSteps extends utils {
 	public void item_array_has_length_and_offset(String listName, int limit, String listToOffset, int offset) {
 		Assert.assertEquals(limit, scenarioContext.response.jsonPath().getList(listName).size());
 		Assert.assertEquals(offset, scenarioContext.response.jsonPath().getInt(listToOffset));
+	}
+	
+	@Then("the response matches the JSON search schema")
+	public void response_matches_json_search_schema() {
+		scenarioContext.response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/search_schema.json"));
 	}
 	
 	

@@ -2,10 +2,13 @@ package pojo;
 
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class Items {
+
 	
+	//general and artist specific pojo
 	private Map<String, String> external_urls;
     private Followers followers;
     private List<String> genres;
@@ -17,13 +20,26 @@ public class Items {
     private String type;
     private String uri;
     
-    
+    //album specific pojo
     private String album_type;
     private int total_tracks;
     private List<String> available_markets;
     private String release_date;
     private String release_date_precision;
     private List<Artist> artists;
+    
+    //playlist specific pojo
+    private String collaborative;
+    private String description;
+    private Owner owner;
+    private String primary_color;
+    @JsonProperty("public")
+    private boolean publicPlaylist;
+    private String snapshot_id;
+    private Tracks tracks;
+    
+    
+    
 	
 	public Map<String, String> getExternal_urls() {
 		return external_urls;
@@ -121,8 +137,50 @@ public class Items {
 	public void setArtists(List<Artist> artists) {
 		this.artists = artists;
 	}
+	public String getCollaborative() {
+		return collaborative;
+	}
+	public void setCollaborative(String collaborative) {
+		this.collaborative = collaborative;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Owner getOwner() {
+		return owner;
+	}
+	public void setOwner(Owner owner) {
+		this.owner = owner;
+	}
+	public String getPrimary_color() {
+		return primary_color;
+	}
+	public void setPrimary_color(String primary_color) {
+		this.primary_color = primary_color;
+	}
+	public boolean isPublicPlaylist() {
+		return publicPlaylist;
+	}
+	public void setPublicPlaylist(boolean publicPlaylist) {
+		this.publicPlaylist = publicPlaylist;
+	}
+	public String getSnapshot_id() {
+		return snapshot_id;
+	}
+	public void setSnapshot_id(String snapshot_id) {
+		this.snapshot_id = snapshot_id;
+	}
+	public Tracks getTracks() {
+		return tracks;
+	}
+	public void setTracks(Tracks tracks) {
+		this.tracks = tracks;
+	}
 
-
+	
     
 	
 	
