@@ -1,6 +1,8 @@
 # spotify-api-tests
 Spotfiy Web Dev API Test Repo using REST Assured API Testing Framework, written in Java
 
+Spotify web api documentation: https://developer.spotify.com/documentation/web-api
+
 To run:
 
 Create .env file with 
