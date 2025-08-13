@@ -22,11 +22,13 @@ Scenario: User searches for an artist, album, track
 	And "<type>" array has a length of <limit> and "<type>" begins from <offset>
 	
 Examples:
-	|searchTerm                                           |type         |id                       |limit        |offset      |
-	|Nirvana                                              |artist       |7dIxU1XgxBIa3KJAWzaFAC   |10           |0           |	
-	|Drake                                                |artist       |3TVXtAsR1Inumwj472S9r4   |1            |0           |	
-	|Nothing Was The Same (Deluxe)                        |album        |5mz0mJxb80gqJIcRf9LGHJ   |5            |0           |	
-	|rage, rage against the dying of the light            |playlist     |2jVocjSdaKiJ96Z3MZB2Uv   |10           |0           |
-	|I Can and I Will                                     |track        |3veBdtlaLO4NH8ZkGyriU4   |5            |0           |	
-
-
+	|searchTerm                                 |type         |id                       |limit  |offset |
+	|Nirvana                                    |artist       |7dIxU1XgxBIa3KJAWzaFAC   |10     |0      |	
+	|Drake                                      |artist       |3TVXtAsR1Inumwj472S9r4   |1      |0      |	
+	|Nothing Was The Same (Deluxe)              |album        |5mz0mJxb80gqJIcRf9LGHJ   |5      |0      |	
+	|rage, rage against the dying of the light  |playlist     |2jVocjSdaKiJ96Z3MZB2Uv   |10     |0      |
+	|I Can and I Will                           |track        |3veBdtlaLO4NH8ZkGyriU4   |5      |0      |	
+	|mind the game                              |show         |48tZ5JoeFSkRGXIDMMCdRy   |10     |0      |
+	|Jalen & Josh Are OBSESSED With Love Island |episode      |4P8WsYyxog33ZkssQ1Dl0y   |5      |0      |
+	|The Great Gatsby                           |audiobook    |6qjpt1CUHhKXiNoeNoU7nu   |20     |0      |
+	

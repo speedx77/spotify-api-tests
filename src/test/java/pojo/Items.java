@@ -48,7 +48,27 @@ public class Items {
     private String preview_url;
     private Integer track_number;
     
+    //shows specific pojo
+    private List<Copyright> copyrights;
+    private String html_description;
+    private boolean is_externally_hosted;
+    private List<String> languages;
+    private String media_type;
+    private String publisher;
+    private Integer total_episodes;
+    
+    //episode specific pojo
+    private String audio_preview_url;
+    private Map<String, String> resume_point;
+    private String language;
 	
+    //audiobook specific pojo
+    private List<Author> authors;
+    private String edition;
+    private List<Narrator> narrators;
+   private Integer total_chapters;
+    
+    
 	public Map<String, String> getExternal_urls() {
 		return external_urls;
 	}
@@ -241,10 +261,90 @@ public class Items {
 	public void setTrack_number(Integer track_number) {
 		this.track_number = track_number;
 	}
-
-	
-    
-	
+	public String getHtml_description() {
+		return html_description;
+	}
+	public void setHtml_description(String html_description) {
+		this.html_description = html_description;
+	}
+	public boolean isIs_externally_hosted() {
+		return is_externally_hosted;
+	}
+	public void setIs_externally_hosted(boolean is_externally_hosted) {
+		this.is_externally_hosted = is_externally_hosted;
+	}
+	public String getMedia_type() {
+		return media_type;
+	}
+	public void setMedia_type(String media_type) {
+		this.media_type = media_type;
+	}
+	public String getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+	public Integer getTotal_episodes() {
+		return total_episodes;
+	}
+	public void setTotal_episodes(Integer total_episodes) {
+		this.total_episodes = total_episodes;
+	}
+	public List<Copyright> getCopyrights() {
+		return copyrights;
+	}
+	public void setCopyrights(List<Copyright> copyrights) {
+		this.copyrights = copyrights;
+	}
+	public List<String> getLanguages() {
+		return languages;
+	}
+	public void setLanguages(List<String> languages) {
+		this.languages = languages;
+	}
+	public String getAudio_preview_url() {
+		return audio_preview_url;
+	}
+	public void setAudio_preview_url(String audio_preview_url) {
+		this.audio_preview_url = audio_preview_url;
+	}
+	public Map<String, String> getResume_point() {
+		return resume_point;
+	}
+	public void setResume_point(Map<String, String> resume_point) {
+		this.resume_point = resume_point;
+	}
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	public List<Author> getAuthors() {
+		return authors;
+	}
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
+	}
+	public String getEdition() {
+		return edition;
+	}
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
+	public List<Narrator> getNarrators() {
+		return narrators;
+	}
+	public void setNarrators(List<Narrator> narrators) {
+		this.narrators = narrators;
+	}
+	public Integer getTotal_chapters() {
+		return total_chapters;
+	}
+	public void setTotal_chapters(Integer total_chapters) {
+		this.total_chapters = total_chapters;
+	}
 	
 	
 }

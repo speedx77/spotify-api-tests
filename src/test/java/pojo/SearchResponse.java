@@ -6,6 +6,9 @@ public class SearchResponse{
 	private Albums albums;
 	private Playlists playlists;
 	private Tracks tracks;
+	private Shows shows;
+	private Episodes episodes;
+	private Audiobooks audiobooks;
 	
 	public Artists getArtists() {
 		return artists;
@@ -30,6 +33,24 @@ public class SearchResponse{
 	}
 	public void setTracks(Tracks tracks) {
 		this.tracks = tracks;
+	}
+	public Shows getShows() {
+		return shows;
+	}
+	public void setShows(Shows shows) {
+		this.shows = shows;
+	}
+	public Episodes getEpisodes() {
+		return episodes;
+	}
+	public void setEpisodes(Episodes episodes) {
+		this.episodes = episodes;
+	}
+	public Audiobooks getAudiobooks() {
+		return audiobooks;
+	}
+	public void setAudiobooks(Audiobooks audiobooks) {
+		this.audiobooks = audiobooks;
 	}
 	
 

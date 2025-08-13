@@ -112,7 +112,42 @@ public class SearchSteps extends utils {
 				}
 			    
 			}
+		} else if (type.equals("shows")) {
+			List<Items> items = searchResponse.getShows().getItems();
+			for (Items item : items) {
+				if(item != null ) {
+					if(item.getName().equalsIgnoreCase(name)) {
+				    	if(item.getId().equalsIgnoreCase(id)) {
+				    		itemFound = true;
+				    	};
+				    }
+				}
+			    
+			}
+		} else if (type.equals("episodes")) {
+			List<Items> items = searchResponse.getEpisodes().getItems();
+			for (Items item : items) {
+				if(item != null ) {
+					if(item.getName().contains(name)) {
+				    	if(item.getId().equalsIgnoreCase(id)) {
+				    		itemFound = true;
+				    	};
+				    }
+				}
+			    
+			}
+		} else if (type.equals("audiobooks")) {
+			//System.out.println(resp.getBody().asPrettyString());
+			List<Items> items = searchResponse.getAudiobooks().getItems();
+			for (Items item : items) {
+				if(item != null ) {
+			    	if(item.getId().equalsIgnoreCase(id)) {
+			    		itemFound = true;
+			    	};				    
+				}		    
+			}
 		}
+		
 		
 		
 		
