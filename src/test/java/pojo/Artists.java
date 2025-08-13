@@ -1,6 +1,7 @@
 package pojo;
 
 import java.util.List;
+import java.util.Map;
 
 public class Artists {
 	
@@ -12,6 +13,8 @@ public class Artists {
 	private int total;
 	private List<Items> items;
 	
+	//for tracks pojo
+	private Map<String, String> external_urls;
 	
 	public String getHref() {
 		return href;
@@ -54,6 +57,12 @@ public class Artists {
 	}
 	public void setItems(List<Items> items) {
 		this.items = items;
+	}
+	public Map<String, String> getExternal_urls() {
+		return external_urls;
+	}
+	public void setExternal_urls(Map<String, String> external_urls) {
+		this.external_urls = external_urls;
 	}
 	
 	

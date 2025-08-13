@@ -5,6 +5,7 @@ public class SearchResponse{
 	private Artists artists;
 	private Albums albums;
 	private Playlists playlists;
+	private Tracks tracks;
 	
 	public Artists getArtists() {
 		return artists;
@@ -23,6 +24,12 @@ public class SearchResponse{
 	}
 	public void setPlaylists(Playlists playlists) {
 		this.playlists = playlists;
+	}
+	public Tracks getTracks() {
+		return tracks;
+	}
+	public void setTracks(Tracks tracks) {
+		this.tracks = tracks;
 	}
 	
 

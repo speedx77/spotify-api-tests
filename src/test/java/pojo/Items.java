@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 public class Items {
 
 	
@@ -38,7 +37,16 @@ public class Items {
     private String snapshot_id;
     private Tracks tracks;
     
-    
+    //track specific pojo
+    private Album album;
+    private Integer disc_number;
+    private Integer duration_ms;
+    private boolean explicit;
+    private Map<String, String> external_ids;
+    private boolean is_local;
+    private boolean is_playable;
+    private String preview_url;
+    private Integer track_number;
     
 	
 	public Map<String, String> getExternal_urls() {
@@ -178,6 +186,60 @@ public class Items {
 	}
 	public void setTracks(Tracks tracks) {
 		this.tracks = tracks;
+	}
+	public Album getAlbum() {
+		return album;
+	}
+	public void setAlbum(Album album) {
+		this.album = album;
+	}
+	public Integer getDisc_number() {
+		return disc_number;
+	}
+	public void setDisc_number(Integer disc_number) {
+		this.disc_number = disc_number;
+	}
+	public Integer getDuration_ms() {
+		return duration_ms;
+	}
+	public void setDuration_ms(Integer duration_ms) {
+		this.duration_ms = duration_ms;
+	}
+	public boolean isExplicit() {
+		return explicit;
+	}
+	public void setExplicit(boolean explicit) {
+		this.explicit = explicit;
+	}
+	public Map<String, String> getExternal_ids() {
+		return external_ids;
+	}
+	public void setExternal_ids(Map<String, String> external_ids) {
+		this.external_ids = external_ids;
+	}
+	public boolean isIs_local() {
+		return is_local;
+	}
+	public void setIs_local(boolean is_local) {
+		this.is_local = is_local;
+	}
+	public boolean isIs_playable() {
+		return is_playable;
+	}
+	public void setIs_playable(boolean is_playable) {
+		this.is_playable = is_playable;
+	}
+	public String getPreview_url() {
+		return preview_url;
+	}
+	public void setPreview_url(String preview_url) {
+		this.preview_url = preview_url;
+	}
+	public Integer getTrack_number() {
+		return track_number;
+	}
+	public void setTrack_number(Integer track_number) {
+		this.track_number = track_number;
 	}
 
 	

@@ -34,6 +34,7 @@ public class SearchSteps extends utils {
 	}
 	
 	
+	
 	@When("user calls search endpoint for {string} of type {string} with {int} and {int}")
 	public void user_calls_search_endpoint(String searchTerm, String type, Integer limit, Integer offset) {
 		scenarioContext.response = given().spec(requestSpecification())
@@ -48,6 +49,12 @@ public class SearchSteps extends utils {
 		
 	}
 	
+	@Then("the response matches the JSON search schema")
+	public void response_matches_json_search_schema() {
+		scenarioContext.response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/search_schema.json"));
+	}
+	
+	
 
 	@Then("{string} is found in {string} response body with an {string}")
 	public void item_in_response_body_is_found(String name, String type, String id) throws JsonMappingException, JsonProcessingException{
@@ -57,6 +64,7 @@ public class SearchSteps extends utils {
 		ObjectMapper mapper = new ObjectMapper();
 		SearchResponse searchResponse = mapper.readValue(resp.asString(), SearchResponse.class);
 		
+		type = type.concat("s");
 
 		if(type.equals("artists")) {
 			List<Items> items = searchResponse.getArtists().getItems();
@@ -92,7 +100,20 @@ public class SearchSteps extends utils {
 				}
 			    
 			}
+		} else if (type.equals("tracks")) {
+			List<Items> items = searchResponse.getTracks().getItems();
+			for (Items item : items) {
+				if(item != null ) {
+					if(item.getName().equalsIgnoreCase(name)) {
+				    	if(item.getId().equalsIgnoreCase(id)) {
+				    		itemFound = true;
+				    	};
+				    }
+				}
+			    
+			}
 		}
+		
 		
 		
 		Assert.assertTrue(String.format("%s has been found in search", name), itemFound);
@@ -101,14 +122,12 @@ public class SearchSteps extends utils {
 	
 	@Then("{string} array has a length of {int} and {string} begins from {int}")
 	public void item_array_has_length_and_offset(String listName, int limit, String listToOffset, int offset) {
+		listName = listName.concat("s.items");
+		listToOffset = listToOffset.concat("s.offset");
 		Assert.assertEquals(limit, scenarioContext.response.jsonPath().getList(listName).size());
 		Assert.assertEquals(offset, scenarioContext.response.jsonPath().getInt(listToOffset));
 	}
 	
-	@Then("the response matches the JSON search schema")
-	public void response_matches_json_search_schema() {
-		scenarioContext.response.then().assertThat().body(matchesJsonSchemaInClasspath("schemas/search_schema.json"));
-	}
 	
 	
 }
