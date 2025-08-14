@@ -42,6 +42,7 @@ public class SearchSteps extends utils {
 				.queryParam("type", type)
 				.queryParam("limit", limit)
 				.queryParam("offset", offset)
+				.queryParam("locale", "en-us")
 				.when().get("v1/search")
 				.then().spec(successResSpec()).extract().response();
 		
@@ -125,6 +126,7 @@ public class SearchSteps extends utils {
 			    
 			}
 		} else if (type.equals("episodes")) {
+			//test example includes a partial title so changed from equals to contains
 			List<Items> items = searchResponse.getEpisodes().getItems();
 			for (Items item : items) {
 				if(item != null ) {
@@ -137,7 +139,7 @@ public class SearchSteps extends utils {
 			    
 			}
 		} else if (type.equals("audiobooks")) {
-			//System.out.println(resp.getBody().asPrettyString());
+			//test example includes spelling mistake so the name.equals/contains has been removed here
 			List<Items> items = searchResponse.getAudiobooks().getItems();
 			for (Items item : items) {
 				if(item != null ) {
