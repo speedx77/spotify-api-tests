@@ -30,7 +30,7 @@ Examples:
 	|I Can and I Will                           |track        |3veBdtlaLO4NH8ZkGyriU4   |5      |0      |	
 	|mind the game                              |show         |48tZ5JoeFSkRGXIDMMCdRy   |10     |0      |
 	|Jalen & Josh Are OBSESSED With Love Island |episode      |4P8WsYyxog33ZkssQ1Dl0y   |5      |0      |
-	|The Great Gatsby                           |audiobook    |6qjpt1CUHhKXiNoeNoU7nu   |20     |0      |
+	|Le  graet Gtasby                           |audiobook    |6qjpt1CUHhKXiNoeNoU7nu   |20     |0      |
 	
 Scenario: User makes an invalid search
 	When user makes a bad call of search endpoint for "<searchTerm>" of type "<type>" with <limit> and <offset>
@@ -38,3 +38,4 @@ Scenario: User makes an invalid search
 Examples:
 	|searchTerm                                 |type              |id                       |limit  |offset |
 	|Ex:Re                                      |artistszdsad      |7dIxU1XgxBIa3KJAWzaFAC   |10     |0      |		
+	
