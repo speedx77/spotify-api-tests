@@ -44,9 +44,7 @@ public class SearchSteps extends utils {
 				.queryParam("offset", offset)
 				.when().get("v1/search")
 				.then().spec(successResSpec()).extract().response();
-		
-		
-		
+				
 	}
 	
 	@Then("the response matches the JSON search schema")
@@ -147,10 +145,7 @@ public class SearchSteps extends utils {
 				}		    
 			}
 		}
-		
-		
-		
-		
+			
 		Assert.assertTrue(String.format("%s has been found in search", name), itemFound);
 		
 	}
@@ -164,5 +159,23 @@ public class SearchSteps extends utils {
 	}
 	
 	
+	@When("user makes a bad call of search endpoint for {string} of type {string} with {int} and {int}")
+	public void user_bad_calls_search_endpoint(String searchTerm, String type, Integer limit, Integer offset) {
+		scenarioContext.response = given().spec(requestSpecification())
+				.queryParam("q", searchTerm)
+				.queryParam("type", type)
+				.queryParam("limit", limit)
+				.queryParam("offset", offset)
+				.when().get("v1/search")
+				.then().spec(badRequestContentSpec()).extract().response();
+				
+	}
+	
+	@Then("the API call is not sucessful with status code {int}")
+	public void the_api_call_is_not_successful_with_status_code(Integer status) {
+		System.out.println("Status: " +  status);
+		Assert.assertEquals( (int) status, scenarioContext.response.getStatusCode());
+		
+	}
 	
 }

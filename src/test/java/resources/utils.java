@@ -79,6 +79,14 @@ public class utils{
 		
 		return res;
 	}
+	
+	public ResponseSpecification badRequestContentSpec() {
+		res = new ResponseSpecBuilder()
+				.expectStatusCode(400)
+				.build();
+		
+		return res;
+	}
 
 	//general method to convert response to JSON
 	public static String getJsonPath(Response response, String key) {
