@@ -38,4 +38,5 @@ Scenario: User makes an invalid search
 Examples:
 	|searchTerm                                 |type              |id                       |limit  |offset |
 	|Ex:Re                                      |artistszdsad      |7dIxU1XgxBIa3KJAWzaFAC   |10     |0      |		
+	|                                           |album             |7dIxU1XgxBIa3KJAWzaFAC   |10     |0      |		
 	
